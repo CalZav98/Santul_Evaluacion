@@ -7,7 +7,27 @@ const Login = () => {
   const [error, setError] = useState('');
 
   const handleLogin = async (e) => {
-    
+    e.preventDefault(); // Evitar el comportamiento por defecto del formulario
+
+    try {
+      const response = await axios.post('http://localhost:4000/api/usuarios/login', {
+        correo: email,
+        contraseña: password,
+      });
+
+      // Manejar la respuesta exitosa
+      console.log('Login exitoso:', response.data);
+      // Aquí puedes guardar el token en el almacenamiento local o en el contexto global
+      // localStorage.setItem('token', response.data.token);
+    } catch (err) {
+      // Manejar errores
+      if (err.response && err.response.status === 401) {
+        setError('Credenciales incorrectas.'); // Error de autenticación
+      } else {
+        setError('Error en el servidor. Por favor, inténtalo más tarde.'); // Otro error
+      }
+      console.error('Error en el login:', err);
+    }
   };
 
   return (
@@ -39,4 +59,5 @@ const Login = () => {
 };
 
 export default Login;
+
 
