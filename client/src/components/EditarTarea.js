@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../css/Tareas.css';
 
-const CrearTarea = () => {
+const EditarTarea = () => {
   const [titulo, setTitulo] = useState('');
   const [descripcion, setDescripcion] = useState('');
   const [status, setStatus] = useState('pendiente');
@@ -16,7 +16,7 @@ const CrearTarea = () => {
     <div className="tasks-container">
       <header className="header">
         <div className="header-content">
-          <h1>Registrar Nueva Tarea</h1>
+          <h1>Editar Tarea</h1>
         </div>
       </header>
       <main className="main">
@@ -53,7 +53,7 @@ const CrearTarea = () => {
                 <option value="completado">Completado</option>
               </select>
             </div>
-            <button type="submit" className="btn btn-primary">Crear Tarea</button>
+            <button type="submit" className="btn btn-primary">Editar Tarea</button>
           </form>
         </div>
       </main>
@@ -66,5 +66,4 @@ const CrearTarea = () => {
   );
 };
 
-export default CrearTarea;
-
+export default EditarTarea;

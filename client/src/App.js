@@ -5,6 +5,7 @@ import NoEncontrado from './pages/NoEncontrado';
 import Login from './components/Login';
 import ListaTareas from './components/ListaTareas';
 import CrearTarea from './components/CrearTarea';
+import EditarTarea from './components/EditarTarea';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/tareas" element={<ListaTareas />} />
           <Route path="/crear-tarea" element={<CrearTarea />} />
+          <Route path="/editar-tarea" element={<EditarTarea />} />
           <Route path="*" element={<NoEncontrado />} />
         </Routes>
       </div>
