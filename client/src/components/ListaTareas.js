@@ -1,20 +1,58 @@
-import React, { useState } from 'react';
+
+import React, { useEffect, useState } from 'react';
 import '../css/TareasTab.css';
 
 const TasksTable = () => {
-  const [tasks, setTasks] = useState([
-    
-  ]);
+  const [tasks, setTasks] = useState([]);
+  const [error, setError] = useState('');
 
-  const handleEdit = (index) => {
-    // Lógica para editar la tarea
-    console.log(`Editando tarea ${index}`);
+  useEffect(() => {
+    const fetchTasks = async () => {
+      const token = localStorage.getItem('token');
+      const usuario = JSON.parse(localStorage.getItem('usuario'));
+
+      if (token && usuario) {
+        try {
+          const response = await fetch(`http://localhost:4000/api/tareas/usuario/${usuario.id}`, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error('Error al obtener las tareas');
+          }
+
+          const data = await response.json();
+          console.log('Datos recibidos:', data); // Verifica aquí la estructura de los datos
+
+          // Acceder a la propiedad body para obtener las tareas
+          if (Array.isArray(data.body)) {
+            setTasks(data.body); // Asigna las tareas obtenidas
+          } else {
+            setError('La respuesta no es un arreglo de tareas.');
+          }
+        } catch (err) {
+          setError(err.message);
+          console.error('Error:', err);
+        }
+      }
+    };
+
+    fetchTasks();
+  }, []);
+
+  // Definición de la función handleEdit
+  const handleEdit = (id) => {
+    console.log(`Editando tarea con ID: ${id}`);
+    // Aquí puedes agregar la lógica para editar la tarea
   };
 
-  const handleDelete = (index) => {
-    // Lógica para eliminar la tarea
-    console.log(`Eliminando tarea ${index}`);
-    setTasks(tasks.filter((_, i) => i !== index)); // Elimina la tarea del estado
+  // Definición de la función handleDelete
+  const handleDelete = (id) => {
+    console.log(`Eliminando tarea con ID: ${id}`);
+    setTasks(tasks.filter(task => task.id !== id)); // Eliminar la tarea de la lista
   };
 
   return (
@@ -38,22 +76,23 @@ const TasksTable = () => {
               </tr>
             </thead>
             <tbody>
+              {error && <tr><td colSpan="5" style={{ textAlign: 'center' }}>{error}</td></tr>}
               {tasks.length === 0 ? (
                 <tr>
                   <td colSpan="5" style={{ textAlign: 'center' }}>No hay tareas registradas.</td>
                 </tr>
               ) : (
-                tasks.map((task, index) => (
-                  <tr key={index}>
-                    <td>{task.title}</td>
-                    <td>{task.description}</td>
-                    <td>{task.status}</td>
-                    <td>{task.date}</td>
+                tasks.map((task) => (
+                  <tr key={task.id}>
+                    <td>{task.titulo}</td>
+                    <td>{task.descripcion}</td>
+                    <td>{task.estado}</td>
+                    <td>{new Date(task.fecha_creacion).toLocaleDateString()}</td>
                     <td>
-                      <button className="btn btn-primary" onClick={() => handleEdit(index)}>
+                      <button className="btn btn-primary" onClick={() => handleEdit(task.id)}>
                         Editar
                       </button>
-                      <button className="btn btn-danger" onClick={() => handleDelete(index)}>
+                      <button className="btn btn-danger" onClick={() => handleDelete(task.id)}>
                         Eliminar
                       </button>
                     </td>

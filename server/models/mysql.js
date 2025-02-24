@@ -73,6 +73,17 @@ function login_usuario(email, contraseña) {
     });
 }
 
+function get_alltareasPorUsuario(table, id_usuario) {
+    return new Promise((resolve, reject) => {
+        conexion.query(`SELECT * FROM ${table} WHERE id_usuario = ?`, [id_usuario], (error, result) => {
+            if (error) {
+                return reject(error);
+            }
+            resolve(result); // Devolver el resultado
+        });
+    });
+}
+
 
 
 
@@ -295,5 +306,6 @@ module.exports = {
     get_tarea,
     reg_tarea,
     del_tarea,
-    up_tarea
+    up_tarea,
+    get_alltareasPorUsuario
 }

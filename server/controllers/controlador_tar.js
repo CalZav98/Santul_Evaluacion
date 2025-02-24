@@ -23,10 +23,17 @@ async function up_Tar(id, data) {
     return db.up_tarea(TABLA_TAR, id, data);
 }
 
+async function get_TareasPorUsuario(id_usuario) {
+    const tareas = await db.get_alltareasPorUsuario(TABLA_TAR, id_usuario);
+    console.log('Tareas obtenidas:', tareas);
+    return tareas || [];
+}
+
 module.exports = {
     get_allTar,
     get_Tar,
     del_Tar,
     reg_Tar,
-    up_Tar
+    up_Tar,
+    get_TareasPorUsuario
 }

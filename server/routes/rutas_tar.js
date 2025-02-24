@@ -1,8 +1,6 @@
 const express = require('express');
-
 const respuesta = require('../respuestas');
 const controlador = require('../controllers/controlador_tar');
-
 const router = express.Router();
 
 // Rutas
@@ -11,6 +9,20 @@ router.get('/:id', get_Tar);
 router.delete('/:id', del_Tar);
 router.post('/', reg_Tar);
 router.put('/:id', up_Tar);
+
+// 
+router.get('/usuario/:id_usuario', async (req, res) => {
+    const id_usuario = req.params.id_usuario;
+    try {
+        const items = await controlador.get_TareasPorUsuario(id_usuario);
+        respuesta.success(req, res, items, 200); // Asegúrate de que items sea un arreglo
+    } catch (err) {
+        console.error('Error al obtener tareas:', err);
+        respuesta.error(req, res, err.message || 'Error interno del servidor', 500);
+    }
+});
+
+
 
 // Consultar todas las tareas
 async function get_allTar (req, res) {
