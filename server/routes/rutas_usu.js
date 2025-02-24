@@ -11,6 +11,32 @@ router.get('/:id', get_Usu);
 router.delete('/:id', del_Usu);
 router.post('/', reg_Usu);
 router.put('/:id', up_Usu);
+router.post('/login', login);
+
+
+
+// Login
+
+// Login de usuario
+async function login(req, res) {
+    
+    const { correo, contraseña } = req.body;
+    console.log(`Intentando hacer login con correo: ${correo}`);
+
+    try {
+        const { usuario, token } = await controlador.login({ correo, contraseña });
+        res.status(200).json({ usuario, token });
+    } catch (err) {
+        if (err.message === 'Usuario no encontrado.' || err.message === 'Contraseña incorrecta.') {
+            return res.status(401).send(err.message);
+        }
+        res.status(500).send('Error interno del servidor');
+    }
+}
+
+
+
+
 
 // Consultar todos los usuarios
 async function get_allUsu (req, res) {

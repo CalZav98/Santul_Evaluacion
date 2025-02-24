@@ -11,12 +11,13 @@ const app = express();
 // Middlewares
 app.use(morgan('dev'));
 app.use(express.json());
+require('dotenv').config();
 
 // Configuracion 
 app.set('port', config.app.port);
 
 // Rutas
-app.use('/usuarios', usuarios)
-app.use('/tareas', tareas)
+app.use('/api/usuarios', usuarios)
+app.use('/api/tareas', tareas)
 
 module.exports = app;

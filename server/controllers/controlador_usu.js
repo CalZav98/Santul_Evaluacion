@@ -1,6 +1,20 @@
 const db = require('../models/mysql');
+const jwt = require('jsonwebtoken');
 
 const TABLA_USU = 'usuarios'
+
+
+// Login 
+
+async function login(data) {
+    const { correo, contraseña } = data;
+    const usuario = await db.login_usuario(correo, contraseña);
+
+    // Generar un token JWT
+    const token = jwt.sign({ id: usuario.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    return { usuario, token };
+}
 
 // Consultar usuarios registrados
 function get_allUsu() {
@@ -26,7 +40,6 @@ async function reg_Usu(data) {
     return db.reg_usuario(TABLA_USU, data);
 }
 
-
 // Actualizar el usuario
 async function up_Usu(id, data) {
     return db.up_usuario(TABLA_USU, id, data);
@@ -37,5 +50,6 @@ module.exports = {
     get_Usu,
     del_Usu,
     reg_Usu,
-    up_Usu
+    up_Usu,
+    login
 }

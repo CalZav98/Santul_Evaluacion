@@ -1,5 +1,6 @@
-const mysql = require('mysql');
 const config = require('../config/config');
+const mysql = require('mysql');
+const bcrypt = require('bcryptjs');
 
 // Llamar variables de entorno
 
@@ -42,6 +43,47 @@ function conMySQL() {
 
 conMySQL();
 
+// Otras funciones
+
+function login_usuario(email, contraseña) {
+    console.log(`Buscando usuario con correo: ${email}`);
+    return new Promise((resolve, reject) => {
+        // Buscar el usuario por su correo
+        conexion.query(`SELECT * FROM usuarios WHERE correo = ?`, [email], (error, result) => {
+            if (error) {
+                return reject(error);
+            }
+            if (result.length === 0) {
+                return reject(new Error('Usuario no encontrado.'));
+            }
+
+            const usuario = result[0];
+            console.log(`Usuario encontrado: ${JSON.stringify(usuario)}`); // Agregado para depuración
+
+            // Comparar la contraseña
+            console.log(`Contraseña ingresada: ${contraseña}`); // Agregado para depuración
+            console.log(`Contraseña almacenada: ${usuario.contraseña}`); // Agregado para depuración
+
+            bcrypt.compare(contraseña, usuario.contraseña, (err, isMatch) => {
+                if (err) {
+                    return reject(err);
+                }
+                console.log(`¿Contraseña coincide? ${isMatch}`); // Agregado para depuración
+                if (!isMatch) {
+                    return reject(new Error('Contraseña incorrecta.'));
+                }
+
+                // Si la autenticación es exitosa, devolver el usuario
+                resolve(usuario);
+            });
+        });
+    });
+}
+
+
+
+
+
 // Funciones de la tabla Usuarios
 
 function get_allusuarios(table) {
@@ -72,14 +114,21 @@ function reg_usuario(table, data) {
                 return reject(new Error('El correo ya está registrado.'));
             }
 
-            // Si el correo es único, se procede a insertar el nuevo usuario
-            conexion.query(`INSERT INTO ${table} (nombre, correo, contraseña) VALUES (?, ?, ?)`,
-                [data.nombre, data.correo, data.contraseña], (error, result) => {
-                    if (error) {
-                        return reject(error);
-                    }
-                    resolve(result);
-                });
+            // Encriptar la contraseña
+            bcrypt.hash(data.contraseña, 10, (err, hashedPassword) => {
+                if (err) {
+                    return reject(err);
+                }
+
+                // Si el correo es único, se procede a insertar el nuevo usuario
+                conexion.query(`INSERT INTO ${table} (nombre, correo, contraseña) VALUES (?, ?, ?)`,
+                    [data.nombre, data.correo, hashedPassword], (error, result) => {
+                        if (error) {
+                            return reject(error);
+                        }
+                        resolve(result);
+                    });
+            });
         });
     });
 }
@@ -122,8 +171,6 @@ function up_usuario(table, id, data) {
         });
     });
 }
-
-
 
 function del_usuario(table, id) {
     return new Promise((resolve, reject) => {
@@ -237,6 +284,7 @@ module.exports = {
     del_usuario,
     del_tar_usuario,
     up_usuario,
+    login_usuario,
 
     get_alltareas,
     get_tarea,
