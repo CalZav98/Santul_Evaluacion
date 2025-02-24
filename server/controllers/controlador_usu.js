@@ -8,13 +8,21 @@ const TABLA_USU = 'usuarios'
 
 async function login(data) {
     const { correo, contraseña } = data;
+    console.log(`Buscando usuario con correo: ${correo}`);
     const usuario = await db.login_usuario(correo, contraseña);
+    console.log(`Usuario encontrado: ${usuario}`);
 
     // Generar un token JWT
+    console.log('JWT_SECRET:', process.env.JWT_SECRET);
     const token = jwt.sign({ id: usuario.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    
+    console.log(`Token generado: ${token}`);
 
     return { usuario, token };
 }
+
+
+
 
 // Consultar usuarios registrados
 function get_allUsu() {

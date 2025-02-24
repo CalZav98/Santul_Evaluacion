@@ -45,40 +45,30 @@ conMySQL();
 
 // Otras funciones
 
-function login_usuario(email, contraseña) {
-    console.log(`Buscando usuario con correo: ${email}`);
+async function login_usuario(email, contraseña) {
     return new Promise((resolve, reject) => {
-        // Buscar el usuario por su correo
         conexion.query(`SELECT * FROM usuarios WHERE correo = ?`, [email], (error, result) => {
             if (error) {
-                return reject(error);
+                return reject(error); // Asegúrate de rechazar el error
             }
             if (result.length === 0) {
                 return reject(new Error('Usuario no encontrado.'));
             }
 
             const usuario = result[0];
-            console.log(`Usuario encontrado: ${JSON.stringify(usuario)}`); // Agregado para depuración
-
-            // Comparar la contraseña
-            console.log(`Contraseña ingresada: ${contraseña}`); // Agregado para depuración
-            console.log(`Contraseña almacenada: ${usuario.contraseña}`); // Agregado para depuración
-
             bcrypt.compare(contraseña, usuario.contraseña, (err, isMatch) => {
                 if (err) {
                     return reject(err);
                 }
-                console.log(`¿Contraseña coincide? ${isMatch}`); // Agregado para depuración
                 if (!isMatch) {
                     return reject(new Error('Contraseña incorrecta.'));
                 }
-
-                // Si la autenticación es exitosa, devolver el usuario
                 resolve(usuario);
             });
         });
     });
 }
+
 
 
 

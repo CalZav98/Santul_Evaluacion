@@ -7,38 +7,8 @@ const Login = () => {
   const [error, setError] = useState('');
 
   const handleLogin = async (e) => {
-    e.preventDefault();
-    setError(''); // Reiniciar el error
-
-    try {
-        // Cambia la URL a la de tu API de inicio de sesión
-        const response = await axios.post('http://localhost:4000/usuarios', {
-            correo: email, // Cambia 'email' a 'correo'
-            contraseña: password, // Cambia 'password' a 'contraseña'
-        });
-
-        // Manejar la respuesta de la API
-        if (response.status === 200) {
-            // Aquí puedes guardar el token en localStorage o en el estado global
-            localStorage.setItem('token', response.data.token);
-            // Redirigir o mostrar un mensaje de éxito
-            console.log('Inicio de sesión exitoso:', response.data);
-        }
-    } catch (err) {
-        if (err.response) {
-            // El servidor respondió con un código de estado fuera del rango de 2xx
-            console.error('Error de respuesta del servidor:', err.response);
-            setError(err.response.data.message || 'test');
-        } else if (err.request) {
-            // La solicitud fue hecha pero no se recibió respuesta
-            setError('No se recibió respuesta del servidor');
-        } else {
-            // Ocurrió un error al configurar la solicitud
-            setError('Error al configurar la solicitud: ' + err.message);
-        }
-        console.log(err)
-    }
-};
+    
+  };
 
   return (
     <form onSubmit={handleLogin}>

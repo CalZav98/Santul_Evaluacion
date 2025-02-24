@@ -19,7 +19,6 @@ router.post('/login', login);
 
 // Login de usuario
 async function login(req, res) {
-    
     const { correo, contraseña } = req.body;
     console.log(`Intentando hacer login con correo: ${correo}`);
 
@@ -27,12 +26,14 @@ async function login(req, res) {
         const { usuario, token } = await controlador.login({ correo, contraseña });
         res.status(200).json({ usuario, token });
     } catch (err) {
+        console.error('Error en el login:', err); // Log para depuración
         if (err.message === 'Usuario no encontrado.' || err.message === 'Contraseña incorrecta.') {
             return res.status(401).send(err.message);
         }
         res.status(500).send('Error interno del servidor');
     }
 }
+
 
 
 
