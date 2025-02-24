@@ -3,25 +3,7 @@ import '../css/TareasTab.css';
 
 const TasksTable = () => {
   const [tasks, setTasks] = useState([
-    {
-      title: 'Tarea 1',
-      description: 'Descripción de la tarea 1',
-      status: 'Pendiente',
-      date: '2023-04-15',
-    },
-    {
-      title: 'Tarea 2',
-      description: 'Descripción de la tarea 2',
-      status: 'En Progreso',
-      date: '2023-04-20',
-    },
-    {
-      title: 'Tarea 3',
-      description: 'Descripción de la tarea 3',
-      status: 'Completada',
-      date: '2023-04-25',
-    },
-    // Puedes agregar más tareas aquí
+    
   ]);
 
   const handleEdit = (index) => {

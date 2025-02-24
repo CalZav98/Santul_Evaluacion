@@ -22,8 +22,6 @@ async function login(data) {
 }
 
 
-
-
 // Consultar usuarios registrados
 function get_allUsu() {
     return db.get_allusuarios(TABLA_USU);

@@ -1,21 +1,50 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import logo from '../img/santul.png';
 import '../css/Login.css';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Username:', username);
-    console.log('Password:', password);
+    setError(''); // Limpiar errores previos
+
+    try {
+      const response = await fetch('http://localhost:4000/api/usuarios/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ correo: username, contraseña: password }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error en el login');
+      }
+
+      const data = await response.json();
+      console.log('Usuario:', data.usuario);
+      console.log('Token:', data.token);
+      
+      // Se almacena el Token del usuario en sesion.
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('usuario', JSON.stringify(data.usuario));
+
+      // Se redirije a la ventana de tareas.
+      navigate('/tareas');
+    } catch (err) {
+      setError(err.message);
+      console.error('Error:', err);
+    }
   };
 
   return (
     <div className="login-container">
-      <header className="header">
-      </header>
+      <header className="header"></header>
 
       <main className="main">
         <div className="form-container">
@@ -24,6 +53,7 @@ const Login = () => {
               <img src={logo} alt="Logo" className="logo" />
             </div>
             <h2>Inicio de Sesión</h2>
+            {error && <p className="error">{error}</p>}
             <div className="input-group">
               <label htmlFor="username">Usuario</label>
               <input

@@ -1,5 +1,5 @@
-const config = require('../config/config');
 const mysql = require('mysql');
+const config = require('../config/config');
 const bcrypt = require('bcryptjs');
 
 // Llamar variables de entorno
@@ -45,17 +45,20 @@ conMySQL();
 
 // Otras funciones
 
-async function login_usuario(email, contraseña) {
+function login_usuario(email, contraseña) {
     return new Promise((resolve, reject) => {
+        // Verificar si el correo ingresado esta registrado
         conexion.query(`SELECT * FROM usuarios WHERE correo = ?`, [email], (error, result) => {
             if (error) {
-                return reject(error); // Asegúrate de rechazar el error
+                return reject(error);
             }
             if (result.length === 0) {
                 return reject(new Error('Usuario no encontrado.'));
             }
 
             const usuario = result[0];
+
+            // Interpreta la contraseña encriptada
             bcrypt.compare(contraseña, usuario.contraseña, (err, isMatch) => {
                 if (err) {
                     return reject(err);
@@ -63,6 +66,7 @@ async function login_usuario(email, contraseña) {
                 if (!isMatch) {
                     return reject(new Error('Contraseña incorrecta.'));
                 }
+
                 resolve(usuario);
             });
         });
@@ -73,9 +77,9 @@ async function login_usuario(email, contraseña) {
 
 
 
-
 // Funciones de la tabla Usuarios
 
+// Consultar todos los usuarios
 function get_allusuarios(table) {
     return new Promise((resolve, reject) => {
         conexion.query(`SELECT * FROM ${table}`, (error, result) => {
@@ -84,6 +88,7 @@ function get_allusuarios(table) {
     });
 }
 
+// Consultar un usuario
 function get_usuario(table, id) {
     return new Promise((resolve, reject) => {
         conexion.query(`SELECT * FROM ${table} WHERE id=${id}`, (error, result) => {
@@ -92,6 +97,7 @@ function get_usuario(table, id) {
     });
 }
 
+// Registrar usuario
 function reg_usuario(table, data) {
     return new Promise((resolve, reject) => {
         // Verificar si el correo ya está registrado
@@ -123,6 +129,7 @@ function reg_usuario(table, data) {
     });
 }
 
+// Actualizar usuario
 function up_usuario(table, id, data) {
     return new Promise((resolve, reject) => {
         // Primero, obtener el correo actual del usuario
@@ -162,6 +169,7 @@ function up_usuario(table, id, data) {
     });
 }
 
+// Eliminar usuario
 function del_usuario(table, id) {
     return new Promise((resolve, reject) => {
         conexion.query(`DELETE FROM ${table} WHERE id = ?`, [id], (error, result) => {
@@ -175,6 +183,7 @@ function del_usuario(table, id) {
     });
 }
 
+// Eliminar las tareas del usuario eliminado
 function del_tar_usuario(table, id) {
     return new Promise((resolve, reject) => {
         conexion.query(`DELETE FROM ${table} WHERE id_usuario = ?`, [id], (error, result) => {
@@ -191,6 +200,7 @@ function del_tar_usuario(table, id) {
 
 // Funciones de la tabla Tareas
 
+// Consultar todas las tareas
 function get_alltareas(table) {
     return new Promise((resolve, reject) => {
         conexion.query(`SELECT * FROM ${table}`, (error, result) => {
@@ -199,6 +209,7 @@ function get_alltareas(table) {
     });
 }
 
+// Consultar una tarea
 function get_tarea(table, id) {
     return new Promise((resolve, reject) => {
         conexion.query(`SELECT * FROM ${table} WHERE id=${id}`, (error, result) => {
@@ -207,6 +218,8 @@ function get_tarea(table, id) {
     });
 }
 
+
+// Registrar tarea
 function reg_tarea(table, data) {
     return new Promise((resolve, reject) => {
         // Verificar si el usuario existe
@@ -219,17 +232,18 @@ function reg_tarea(table, data) {
             }
 
             // Si el usuario es válido, se procede a insertar la nueva tarea
-            conexion.query(`INSERT INTO ${table} (titulo, descripcion, estado, id_usuario) VALUES (?, ?, ?, ?)`,    
-            [data.titulo, data.descripcion, data.estado, data.id_usuario], (error, result) => {
-                if (error) {
-                    return reject(error);
-                }
-                resolve(result);
-            });
+            conexion.query(`INSERT INTO ${table} (titulo, descripcion, estado, id_usuario) VALUES (?, ?, ?, ?)`,
+                [data.titulo, data.descripcion, data.estado, data.id_usuario], (error, result) => {
+                    if (error) {
+                        return reject(error);
+                    }
+                    resolve(result);
+                });
         });
     });
 }
 
+// Actualizar tarea
 function up_tarea(table, id, data) {
     return new Promise((resolve, reject) => {
         // Verificar si el usuario existe
@@ -253,6 +267,7 @@ function up_tarea(table, id, data) {
     });
 }
 
+// Eliminar tarea
 function del_tarea(table, id) {
     return new Promise((resolve, reject) => {
         conexion.query(`DELETE FROM ${table} WHERE id = ?`, [id], (error, result) => {
