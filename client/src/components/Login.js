@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault(); // Evitar el comportamiento por defecto del formulario
@@ -19,6 +21,7 @@ const Login = () => {
       console.log('Login exitoso:', response.data);
       // Aquí puedes guardar el token en el almacenamiento local o en el contexto global
       // localStorage.setItem('token', response.data.token);
+      navigate('/tareas');
     } catch (err) {
       // Manejar errores
       if (err.response && err.response.status === 401) {
