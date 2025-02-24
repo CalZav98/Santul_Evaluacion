@@ -79,7 +79,7 @@ function get_alltareasPorUsuario(table, id_usuario) {
             if (error) {
                 return reject(error);
             }
-            resolve(result); // Devolver el resultado
+            resolve(result);
         });
     });
 }

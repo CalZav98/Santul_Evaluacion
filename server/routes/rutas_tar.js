@@ -15,9 +15,8 @@ router.get('/usuario/:id_usuario', async (req, res) => {
     const id_usuario = req.params.id_usuario;
     try {
         const items = await controlador.get_TareasPorUsuario(id_usuario);
-        respuesta.success(req, res, items, 200); // Asegúrate de que items sea un arreglo
+        respuesta.success(req, res, items, 200);
     } catch (err) {
-        console.error('Error al obtener tareas:', err);
         respuesta.error(req, res, err.message || 'Error interno del servidor', 500);
     }
 });

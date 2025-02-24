@@ -25,7 +25,6 @@ async function up_Tar(id, data) {
 
 async function get_TareasPorUsuario(id_usuario) {
     const tareas = await db.get_alltareasPorUsuario(TABLA_TAR, id_usuario);
-    console.log('Tareas obtenidas:', tareas);
     return tareas || [];
 }
 

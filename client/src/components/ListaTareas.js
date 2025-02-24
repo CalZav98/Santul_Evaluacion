@@ -1,8 +1,9 @@
-
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Cambiar a useNavigate
 import '../css/TareasTab.css';
 
 const TasksTable = () => {
+  const navigate = useNavigate(); // Inicializa useNavigate
   const [tasks, setTasks] = useState([]);
   const [error, setError] = useState('');
 
@@ -25,11 +26,10 @@ const TasksTable = () => {
           }
 
           const data = await response.json();
-          console.log('Datos recibidos:', data); // Verifica aquí la estructura de los datos
+          console.log('Datos recibidos:', data);
 
-          // Acceder a la propiedad body para obtener las tareas
           if (Array.isArray(data.body)) {
-            setTasks(data.body); // Asigna las tareas obtenidas
+            setTasks(data.body);
           } else {
             setError('La respuesta no es un arreglo de tareas.');
           }
@@ -43,16 +43,17 @@ const TasksTable = () => {
     fetchTasks();
   }, []);
 
-  // Definición de la función handleEdit
   const handleEdit = (id) => {
     console.log(`Editando tarea con ID: ${id}`);
-    // Aquí puedes agregar la lógica para editar la tarea
   };
 
-  // Definición de la función handleDelete
   const handleDelete = (id) => {
     console.log(`Eliminando tarea con ID: ${id}`);
-    setTasks(tasks.filter(task => task.id !== id)); // Eliminar la tarea de la lista
+    setTasks(tasks.filter(task => task.id !== id));
+  };
+
+  const handleAddTask = () => {
+    navigate('/crear-tarea'); // Cambiar a navigate
   };
 
   return (
@@ -103,6 +104,18 @@ const TasksTable = () => {
           </table>
         </div>
       </main>
+      
+      <div className="add-task-container" style={{ marginTop: '10px', textAlign: 'center' }}>
+        <button
+          className="btn"
+          style={{ backgroundColor: '#28a745', color: 'white' }}
+          onClick={handleAddTask}
+        >
+          Agregar Tarea
+        </button>
+      </div>
+
+      <br />
 
       <footer className="footer">
         <div className="footer-content">

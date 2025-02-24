@@ -67,4 +67,3 @@ const CrearTarea = () => {
 };
 
 export default CrearTarea;
-
