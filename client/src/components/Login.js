@@ -11,7 +11,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(''); // Limpiar errores previos
+    setError('');
 
     try {
       const response = await fetch('http://localhost:4000/api/usuarios/login', {
@@ -40,6 +40,10 @@ const Login = () => {
       setError(err.message);
       console.error('Error:', err);
     }
+  };
+
+  const handleRegisterRedirect = () => {
+    navigate('/registrar');  // Redirige a la ventana de registro
   };
 
   return (
@@ -74,6 +78,9 @@ const Login = () => {
             </div>
             <button type="submit" className="submit-button">Entrar</button>
           </form>
+          <p className="register-text" onClick={handleRegisterRedirect}>
+            ¿No tienes una cuenta? <span className="register-link">Registrarse</span>
+          </p>
         </div>
       </main>
 
@@ -85,4 +92,3 @@ const Login = () => {
 };
 
 export default Login;
-

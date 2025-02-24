@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Cambiar a useNavigate
+import { useNavigate } from 'react-router-dom';
 import '../css/TareasTab.css';
 
 const TasksTable = () => {
-  const navigate = useNavigate(); // Inicializa useNavigate
+  const navigate = useNavigate();
   const [tasks, setTasks] = useState([]);
   const [error, setError] = useState('');
 
@@ -28,6 +28,7 @@ const TasksTable = () => {
           const data = await response.json();
           console.log('Datos recibidos:', data);
 
+          // Verifica si hay tareas y si son un arreglo
           if (Array.isArray(data.body)) {
             setTasks(data.body);
           } else {
@@ -44,7 +45,7 @@ const TasksTable = () => {
   }, []);
 
   const handleEdit = (id) => {
-    console.log(`Editando tarea con ID: ${id}`);
+    navigate(`/editar-tarea/${id}`);
   };
 
   const handleDelete = (id) => {
@@ -53,7 +54,7 @@ const TasksTable = () => {
   };
 
   const handleAddTask = () => {
-    navigate('/crear-tarea'); // Cambiar a navigate
+    navigate('/crear-tarea');
   };
 
   return (
