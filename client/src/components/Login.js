@@ -1,66 +1,58 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import logo from '../img/santul.png';
+import '../css/Login.css';
 
 const Login = () => {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
-    e.preventDefault(); // Evitar el comportamiento por defecto del formulario
-
-    try {
-      const response = await axios.post('http://localhost:4000/api/usuarios/login', {
-        correo: email,
-        contraseña: password,
-      });
-
-      // Manejar la respuesta exitosa
-      console.log('Login exitoso:', response.data);
-      // Aquí puedes guardar el token en el almacenamiento local o en el contexto global
-      // localStorage.setItem('token', response.data.token);
-      navigate('/tareas');
-    } catch (err) {
-      // Manejar errores
-      if (err.response && err.response.status === 401) {
-        setError('Credenciales incorrectas.'); // Error de autenticación
-      } else {
-        setError('Error en el servidor. Por favor, inténtalo más tarde.'); // Otro error
-      }
-      console.error('Error en el login:', err);
-    }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('Username:', username);
+    console.log('Password:', password);
   };
 
   return (
-    <form onSubmit={handleLogin}>
-      <div className="form-group">
-        <label>Email</label>
-        <input
-          type="email"
-          className="form-control"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-      </div>
-      <div className="form-group">
-        <label>Contraseña</label>
-        <input
-          type="password"
-          className="form-control"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-      </div>
-      {error && <div className="alert alert-danger">{error}</div>}
-      <button type="submit" className="btn btn-primary">Iniciar Sesión</button>
-    </form>
+    <div className="login-container">
+      <header className="header">
+      </header>
+
+      <main className="main">
+        <div className="form-container">
+          <form onSubmit={handleSubmit} className="form">
+            <div className="logo-container">
+              <img src={logo} alt="Logo" className="logo" />
+            </div>
+            <h2>Inicio de Sesión</h2>
+            <div className="input-group">
+              <label htmlFor="username">Usuario</label>
+              <input
+                type="text"
+                id="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </div>
+            <div className="input-group">
+              <label htmlFor="password">Contraseña</label>
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+            <button type="submit" className="submit-button">Entrar</button>
+          </form>
+        </div>
+      </main>
+
+      <footer className="footer">
+        <p>&copy; 2025 Santul. Todos los derechos reservados.</p>
+      </footer>
+    </div>
   );
 };
 
 export default Login;
-
 
