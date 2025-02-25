@@ -10,7 +10,8 @@ router.delete('/:id', del_Tar);
 router.post('/', reg_Tar);
 router.put('/:id', up_Tar);
 
-// 
+
+// Obtener las tareas de un usuario
 router.get('/usuario/:id_usuario', async (req, res) => {
     const id_usuario = req.params.id_usuario;
     try {
@@ -20,8 +21,6 @@ router.get('/usuario/:id_usuario', async (req, res) => {
         respuesta.error(req, res, err.message || 'Error interno del servidor', 500);
     }
 });
-
-
 
 // Consultar todas las tareas
 async function get_allTar (req, res) {
@@ -34,14 +33,23 @@ async function get_allTar (req, res) {
 };
 
 // Consultar una tarea por ID
-async function get_Tar (req, res) {
+async function get_Tar(req, res) {
     try {
-        const items = await controlador.get_Tar(req.params.id)
-        respuesta.success(req, res, items, 200)
+        const tarea = await controlador.get_Tar(req.params.id);
+        
+        if (!tarea) {
+            console.error('Tarea no encontrada para ID:', req.params.id); // Log de error específico
+            return res.status(404).send('Tarea no encontrada');
+        }
+        
+        console.log('Tarea encontrada:', tarea); // Log de tarea encontrada
+        res.status(200).json(tarea);
     } catch (err) {
-        respuesta.error(req, res, err, 500);
+        console.error('Error al obtener la tarea:', err.message); // Log del error
+        res.status(500).send('Error al obtener la tarea');
     }
-};
+}
+
 
 // Eliminar una tarea por ID
 async function del_Tar(req, res) {
@@ -99,5 +107,7 @@ async function up_Tar(req, res) {
         res.status(500).send('Error interno del servidor');
     }
 }
+
+
 
 module.exports = router;

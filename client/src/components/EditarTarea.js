@@ -1,3 +1,4 @@
+// EditarTarea.js
 import React, { useEffect, useState } from 'react';
 import '../css/Tareas.css';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -11,65 +12,80 @@ const EditarTarea = () => {
   const { id } = useParams();
 
   useEffect(() => {
-    const fetchTask = async () => {
-      const token = localStorage.getItem('token');
-
-      try {
-        const response = await fetch(`http://localhost:4000/api/tareas/${id}`, {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error('Error al obtener la tarea');
-        }
-
-        const data = await response.json();
-        console.log('Datos de la tarea:', data); // Verifica la estructura de los datos
-
-        // Asegúrate de que los datos contengan las propiedades esperadas
-        if (data.titulo && data.descripcion && data.estado) {
-          setTitulo(data.titulo);
-          setDescripcion(data.descripcion);
-          setStatus(data.estado);
-        } else {
-          throw new Error('Datos de tarea incompletos');
-        }
-      } catch (err) {
-        setError(err.message);
-        console.error('Error:', err); // Muestra el error en la consola
-      }
-    };
-
     fetchTask();
   }, [id]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const fetchTask = async () => {
     const token = localStorage.getItem('token');
 
     try {
       const response = await fetch(`http://localhost:4000/api/tareas/${id}`, {
-        method: 'PUT',
+        method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({ titulo, descripcion, estado: status }),
       });
 
       if (!response.ok) {
-        throw new Error('Error al editar la tarea');
+        throw new Error('Error al obtener la tarea');
       }
 
-      navigate('/tareas');
+      const data = await response.json();
+      console.log(data); // Log para verificar la respuesta
+
+      // Verifica si data es un array y tiene al menos un elemento
+      if (Array.isArray(data) && data.length > 0) {
+        const tarea = data[0]; // Obtén el primer elemento del array
+        setTitulo(tarea.titulo);
+        setDescripcion(tarea.descripcion);
+        setStatus(tarea.estado);
+      } else {
+        console.error('Datos de tarea incompletos:', data); // Log de error específico
+        throw new Error('Datos de tarea incompletos');
+      }
     } catch (err) {
+      console.error('Error en fetchTask:', err.message); // Log del error
       setError(err.message);
-      console.error('Error:', err);
     }
   };
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+    const id_usuario = JSON.parse(localStorage.getItem('usuario')).id; // Asegúrate de obtener el ID correctamente
+
+    const taskData = { titulo, descripcion, status, id_usuario }; // Asegúrate de incluir todos los campos necesarios
+    console.log('Datos a enviar:', taskData); // Log de datos a enviar
+
+    try {
+        const response = await fetch(`http://localhost:4000/api/tareas/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify(taskData),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json(); // Captura el mensaje de error
+            throw new Error(`Error al editar la tarea: ${errorData.message}`);
+        }
+
+        console.log('Tarea editada exitosamente');
+        navigate('/tareas');
+    } catch (err) {
+        console.error('Error en handleSubmit:', err.message);
+        setError(err.message);
+    }
+};
+
+
+
+
+
+
 
   const handleRegresar = () => {
     navigate('/tareas');
@@ -84,7 +100,7 @@ const EditarTarea = () => {
       </header>
       <main className="main">
         <div className="form-container">
-          {error && <p className="error">{error}</p>} {/* Mostrar mensaje de error */}
+          {error && <p className="error">{error}</p>}
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label>Título</label>

@@ -28,7 +28,6 @@ const TasksTable = () => {
           const data = await response.json();
           console.log('Datos recibidos:', data);
 
-          // Verifica si hay tareas y si son un arreglo
           if (Array.isArray(data.body)) {
             setTasks(data.body);
           } else {
@@ -49,9 +48,32 @@ const TasksTable = () => {
   };
 
   const handleDelete = (id) => {
-    console.log(`Eliminando tarea con ID: ${id}`);
-    setTasks(tasks.filter(task => task.id !== id));
-  };
+    const confirmDelete = window.confirm('¿Estás seguro de que deseas eliminar esta tarea?');
+    if (confirmDelete) {
+        deleteTask(id);
+    }
+};
+
+const deleteTask = async (id) => {
+    const token = localStorage.getItem('token');
+    try {
+        const response = await fetch(`http://localhost:4000/api/tareas/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error('Error al eliminar la tarea');
+        }
+
+        setTasks(tasks.filter(task => task.id !== id));
+    } catch (err) {
+        console.error('Error:', err);
+    }
+};
+
 
   const handleAddTask = () => {
     navigate('/crear-tarea');

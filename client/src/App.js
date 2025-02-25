@@ -18,7 +18,7 @@ function App() {
           <Route path="/registrar" element={<Registrar />} />
           <Route path="/tareas" element={<ListaTareas />} />
           <Route path="/crear-tarea" element={<CrearTarea />} />
-          <Route path="/editar-tarea" element={<EditarTarea />} />
+          <Route path="/editar-tarea/:id" element={<EditarTarea />} />
           <Route path="*" element={<NoEncontrado />} />
         </Routes>
       </div>

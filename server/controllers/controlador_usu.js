@@ -5,7 +5,6 @@ const TABLA_USU = 'usuarios'
 
 
 // Login 
-
 async function login(data) {
     const { correo, contraseña } = data;
     console.log(`Buscando usuario con correo: ${correo}`);
@@ -20,7 +19,6 @@ async function login(data) {
 
     return { usuario, token };
 }
-
 
 // Consultar usuarios registrados
 function get_allUsu() {
